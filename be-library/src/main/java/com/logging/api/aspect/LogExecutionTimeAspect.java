@@ -4,6 +4,9 @@ import com.logging.api.annotation.LogExecutionTime;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
 
@@ -12,8 +15,16 @@ import java.util.logging.Logger;
 
 @Aspect  // AOP 관련 기능을 처리하는 Aspect 클래스
 @Component  // Spring Bean으로 등록
+@ConditionalOnBean(name = {"logFormat"})
 public class LogExecutionTimeAspect {
     private static final Logger logger = Logger.getLogger(LogExecutionTimeAspect.class.getName());
+
+    private final String logFormat;
+
+    @Autowired
+    public LogExecutionTimeAspect(@Value("${logging.format:Method: {method}, Execution Time: {time}ms, Args: {args}}") String logFormat) {
+        this.logFormat = logFormat;
+    }
 
     // @LogExecutionTime 어노테이션이 붙은 메소드에 대해 AOP 적용
     @Around("@annotation(logExecutionTime)")  // 특정 어노테이션을 기준으로 AOP 적용
@@ -29,6 +40,7 @@ public class LogExecutionTimeAspect {
         String methodName = joinPoint.getSignature().getName();
 
         long start = System.currentTimeMillis();  // 시작 시간 기록
+        logger.info(logFormat);
         logger.info("API 호출 시작: " + joinPoint.getSignature() + " | 프록시 객체 : " + joinPoint.getThis());
         // 대상 메소드 실행
         Object proceed = joinPoint.proceed();  // joinPoint.proceed()는 메소드를 실제로 실행합니다.
