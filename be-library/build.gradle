@@ -54,8 +54,6 @@ project(":api-logging") {
     dependencies {
         implementation 'org.springframework.boot:spring-boot-starter-aop'
     }
-
-    bootJar.mainClass = ''
     bootJar.enabled = false
     jar.enabled = true
 }
@@ -75,3 +73,5 @@ project(":examples") {
     }
 }
 
+bootJar.enabled = false
+jar.enabled = true
