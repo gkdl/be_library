@@ -21,7 +21,7 @@ public class CustomLogExecutionStrategy implements LogExecutionStrategy  {
     @Override
     public Object execute(ProceedingJoinPoint joinPoint, LogExecutionTime logExecutionTime) throws Throwable {
         logger.info("출력할 로그 정보 입력");
-
+        
         return true;
     }
 }
