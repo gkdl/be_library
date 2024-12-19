@@ -1,0 +1,137 @@
+import com.vanniktech.maven.publish.SonatypeHost // import 꼭 해주세요
+
+buildscript {
+    ext {
+        springBootVersion = '2.7.9'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+plugins {
+    id 'java'
+    id "com.vanniktech.maven.publish" version "0.28.0"
+    id 'signing' // GPG 서명을 위한 플러그인 추가
+}
+
+allprojects {
+    group = 'io.github.gkdl'
+    version = '0.0.3'
+
+    apply plugin: 'org.springframework.boot'
+    apply plugin: 'io.spring.dependency-management'
+    apply plugin: 'java-library'
+    apply plugin: 'java'
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    sourceSets {
+        main {
+            resources {
+                srcDirs = ["src/main/resources","src/main/java"]
+                includes = ["**/*"]
+                excludes = ["**/*.java"]
+            }
+        }
+    }
+
+    // 관리하는 모듈의 공통 dependencies
+    dependencies {
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}
+
+
+project(":api-logging") {
+    apply plugin: "com.vanniktech.maven.publish"
+    apply plugin: 'signing' // GPG 서명을 위한 플러그인 추가
+
+    signing {
+        sign publishing.publications
+    }
+
+    tasks.withType(Javadoc) {
+        options {
+            encoding 'UTF-8'
+        }
+    }
+
+    // Maven Publishing 블록 설정
+    mavenPublishing {
+        signAllPublications() // Gpg 서명을 위한 설정
+        publishToMavenCentral(SonatypeHost.CENTRAL_PORTAL) // 포탈로 등록 할거기 때문에 타입 추가
+
+        coordinates("io.github.gkdl", "custom-api-logging", "0.0.3") // 네임 스페이스, 라이브러리 이름, 버전 순서로 작성
+        // POM 설정
+        pom {
+            name = 'custom-api-logging'
+            description = 'SpringBoot Excel Download Library'
+            url = 'https://github.com/gkdl/be_library'
+
+            // 라이선스 정보
+            licenses {
+                license {
+                    name = 'Apache License'
+                    url = 'https://github.com/gkdl/be_library/blob/main/api-logging/LICENSE'
+                }
+            }
+
+            // 개발자 정보
+            developers {
+                developer {
+                    id = 'gkdl'
+                    name = 'DaeYoung Lim'
+                    email = 'limyoung92@naver.com'
+                }
+            }
+
+            scm {
+                connection = 'scm:git:github.com/gkdl/be_library.git'
+                developerConnection = 'scm:git:ssh://github.com/gkdl/be_library.git'
+                url = 'https://github.com/gkdl/be_library/tree/main'
+            }
+        }
+    }
+
+    dependencies {
+        testImplementation platform('org.junit:junit-bom:5.10.0')
+        testImplementation 'org.junit.jupiter:junit-jupiter'
+        testImplementation 'org.mockito:mockito-core:5.6.0'
+        testImplementation 'org.springframework.boot:spring-boot-starter-test'
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+
+        implementation 'org.springframework.boot:spring-boot-starter-aop:2.7.9'
+    }
+
+    bootJar.enabled = false
+    jar.enabled = true
+}
+
+project(":examples") {
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+        implementation group: 'io.github.gkdl', name: 'custom-api-logging', version: '0.0.3'
+    }
+}
+
+bootJar.enabled = false
+jar.enabled = true
