@@ -28,11 +28,6 @@ jobs:
       - name: Grant execute permission for gradlew
         run : chmod +x gradlew
 
-      - name: Build with jib
-        run: |
-          ./gradlew jib \
-          -Djib.to.image="zxcvb5434/devopstest:${GITHUB_REF##*/}"
-
   deploy:
 
     needs: build

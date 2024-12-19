@@ -13,7 +13,6 @@ buildscript {
 }
 
 plugins {
-    id 'java'
     id "com.vanniktech.maven.publish" version "0.28.0"
     id 'signing' // GPG 서명을 위한 플러그인 추가
 }
