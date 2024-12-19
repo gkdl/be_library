@@ -1,4 +1,9 @@
 name: Gradle Build & K8S Deploy
+# V를 앞글자로 가지는 태그가 push 될 때 해당 workflow 실행 - ex) V2, V3
+on:
+  push:
+    branches: main
+
 jobs:
   build:
 
