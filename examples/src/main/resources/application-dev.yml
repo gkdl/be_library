@@ -1,0 +1,5 @@
+
+# 날짜 출력 포멧 및 로그 출력 포멧 설정 ㅜ
+#logging:
+#  dateFormat: "yyyy-MM-dd"
+#  format: "Api 시작 시간 : {startTime}"
