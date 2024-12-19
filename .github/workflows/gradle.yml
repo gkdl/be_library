@@ -29,5 +29,5 @@ jobs:
         run : chmod +x gradlew
 
       - name: library
-        run: gradlew :api-logging:publishAllPublicationsToMavenCentralRepository
+        run: ./gradlew :api-logging:publishAllPublicationsToMavenCentralRepository
 
