@@ -16,7 +16,7 @@ public class CustomLogExecutionStrategy implements LogExecutionStrategy  {
      * @param joinPoint
      * @param logExecutionTime
      * @return
-     * @throws Throwable  
+     * @throws Throwable
      */
     @Override
     public Object execute(ProceedingJoinPoint joinPoint, LogExecutionTime logExecutionTime) throws Throwable {
